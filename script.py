@@ -29,6 +29,7 @@ def download():
     imgstr = re.search(b'base64,(.*)', request.get_data()).group(1)
     with open('my_image.png','wb') as output:
         output.write(base64.decodebytes(imgstr))
+    return 'res'
 		
 if __name__ == '__main__':
    app.run(debug = True)

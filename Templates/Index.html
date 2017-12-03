@@ -42,7 +42,7 @@
                  document.getElementById("canvasimg").style.border = "2px solid";
                  var dataURL = canvas.toDataURL();
                  document.getElementById("canvasimg").src = dataURL;
-                
+                 document.getElementById("canvasimg").style.display = "inline";
              }
             
             function draw() {
@@ -90,21 +90,13 @@
             {
                 var $SCRIPT_ROOT = {{request.script_root|tojson|safe}};
 	   			var canvasObj = document.getElementById("canv");
-	   			var img = canvasObj.toDataURL("image/png");
-                img = img.replace('data:image/png;base64,', String.prototype)
+	   			var img = canvasObj.toDataURL();
                 document.getElementById("canv").src = img;
-                $.ajax({
-                    type: "POST",
-                    url: $SCRIPT_ROOT + "/download/",
-                    data: img,
-                    success: function(data){
-
-                       // let formData = new FormData();
-                      //  let file = document.querySelector("input[type='file']")
-                       // var inputElement = file.files[0];
-                       // formData.append('image',inputElement);
-                       // request.open("POST", "/uploadFile", true);
-                       // request.send(formData);
+	   			$.ajax({
+	   				type: "POST",
+	   				url: $SCRIPT_ROOT + "/download/",
+	   				data: img,
+	   				success: function(data){
 	   					
 	   				}
 	   			});
