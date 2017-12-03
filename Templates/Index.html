@@ -4,111 +4,122 @@
     <head>
         <meta charset="utf-8">
         <title>Emerging-Technologies-Project</title>
-    </head>
 
-
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-    <script type="text/javascript">
-
-        var canvas, ctx, flag = false,
-            prevX = 0,
-            currX = 0,
-            prevY = 0,
-            currY = 0,
-            dot_flag = false;
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <script type="text/javascript">
     
-        var x = "black",
-            y = 2;
+            var canvas, ctx, flag = false,
+                prevX = 0,
+                currX = 0,
+                prevY = 0,
+                currY = 0,
+                dot_flag = false;
         
-        function initialize() {
-            canvas = document.getElementById('canvasimg');
-            ctx = canvas.getContext("2d");
-            w = canvas.width;
-            h = canvas.height;
-        
-            canvas.addEventListener("mousemove", function (e) {
-                findxy('move', e)
-            }, false);
-            canvas.addEventListener("mousedown", function (e) {
-                findxy('down', e)
-            }, false);
-            canvas.addEventListener("mouseup", function (e) {
-                findxy('up', e)
-            }, false);
-            canvas.addEventListener("mouseout", function (e) {
-                findxy('out', e)
-            }, false);
-        }
-        
-        function draw() {
-            ctx.beginPath();
-            ctx.moveTo(prevX, prevY);
-            ctx.lineTo(currX, currY);
-            ctx.strokeStyle = x;
-            ctx.lineWidth = y;
-            ctx.stroke();
-            ctx.closePath();
-        }
-        
-        function findxy(res, e) {
-            if (res == 'down') {
-                prevX = currX;
-                prevY = currY;
-                currX = e.clientX - canvas.offsetLeft;
-                currY = e.clientY - canvas.offsetTop;
-        
-                flag = true;
-                dot_flag = true;
-                if (dot_flag) {
-                    ctx.beginPath();
-                    ctx.fillStyle = x;
-                    ctx.fillRect(currX, currY, 2, 2);
-                    ctx.closePath();
-                    dot_flag = false;
-                }
+            var x = "black",
+                y = 2;
+            
+            function initialize() {
+                canvas = document.getElementById('canv');
+                ctx = canvas.getContext("2d");
+                w = canvas.width;
+                h = canvas.height;
+            
+                canvas.addEventListener("mousemove", function (e) {
+                    findxy('move', e)
+                }, false);
+                canvas.addEventListener("mousedown", function (e) {
+                    findxy('down', e)
+                }, false);
+                canvas.addEventListener("mouseup", function (e) {
+                    findxy('up', e)
+                }, false);
+                canvas.addEventListener("mouseout", function (e) {
+                    findxy('out', e)
+                }, false);
             }
-            if (res == 'up' || res == "out") {
-                flag = false;
+
+            function save() {
+                 document.getElementById("canvasimg").style.border = "2px solid";
+                 var dataURL = canvas.toDataURL();
+                 document.getElementById("canvasimg").src = dataURL;
+                
+             }
+            
+            function draw() {
+                ctx.beginPath();
+                ctx.moveTo(prevX, prevY);
+                ctx.lineTo(currX, currY);
+                ctx.strokeStyle = x;
+                ctx.lineWidth = y;
+                ctx.stroke();
+                ctx.closePath();
             }
-            if (res == 'move') {
-                if (flag) {
+            
+            function findxy(res, e) {
+                if (res == 'down') {
                     prevX = currX;
                     prevY = currY;
                     currX = e.clientX - canvas.offsetLeft;
                     currY = e.clientY - canvas.offsetTop;
-                    draw();
+            
+                    flag = true;
+                    dot_flag = true;
+                    if (dot_flag) {
+                        ctx.beginPath();
+                        ctx.fillStyle = x;
+                        ctx.fillRect(currX, currY, 2, 2);
+                        ctx.closePath();
+                        dot_flag = false;
+                    }
+                }
+                if (res == 'up' || res == "out") {
+                    flag = false;
+                }
+                if (res == 'move') {
+                    if (flag) {
+                        prevX = currX;
+                        prevY = currY;
+                        currX = e.clientX - canvas.offsetLeft;
+                        currY = e.clientY - canvas.offsetTop;
+                        draw();
+                    }
                 }
             }
-        }
-          
-        function download1()
-        {
-            var img = canvas.toDataURL('image/png');
 
-            $.ajax({
-                url: '/uploadFile',
-                method: 'POST',
-                data: img ,
-                success: function(res){     // return the result            
-                    console.log(res);
-                    
-                    
-                },error: function(err){     // return the error
-                    console.log(err);
-                }
-            });
-        }
-    </script>
+            function uploadImage()
+            {
+                var $SCRIPT_ROOT = {{request.script_root|tojson|safe}};
+	   			var canvasObj = document.getElementById("canv");
+	   			var img = canvasObj.toDataURL("image/png");
+                img = img.replace('data:image/png;base64,', String.prototype)
+                document.getElementById("canv").src = img;
+                $.ajax({
+                    type: "POST",
+                    url: $SCRIPT_ROOT + "/download/",
+                    data: img,
+                    success: function(data){
 
-    <body onload="initialize()">     
-        <canvas id="canvasimg" width="400" height="400" style="position:absolute;top:10%;left:10%;border:2px solid;"></canvas>
+                       // let formData = new FormData();
+                      //  let file = document.querySelector("input[type='file']")
+                       // var inputElement = file.files[0];
+                       // formData.append('image',inputElement);
+                       // request.open("POST", "/uploadFile", true);
+                       // request.send(formData);
+	   					
+	   				}
+	   			});
+            }
+        </script>
+    </head>
+
+    <body onload="initialize()"> 
+        <h1 style="position:absolute;left:45%">Draw A Number</h1>    
+        <canvas id="canv" width="400" height="400" style="position:absolute;top:10%;left:40%;border:2px solid;"></canvas>
         <img id="canvasimg" style="position:absolute;top:10%;left:52%;" style="display:none;">
-        <a href="#" id="downloader" onclick="download1()" download="image.png">Download</a>
-</body>
+        <Button type="button" id="downloader" onclick="uploadImage()">Download</Button>
+        <Button type="button" id="downloader" onclick="save()">save</Button>
+    </body>
 </html>
-
-
-
 <!--<form action="/uploader" method="post" enctype="multipart/form-data" >
 Upload file <input type="file" name="image">-->
 <!--<input type="submit" value="Upload">-->
