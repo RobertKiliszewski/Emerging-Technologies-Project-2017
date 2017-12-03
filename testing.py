@@ -1,61 +1,43 @@
-# Necessarry imports
 import numpy as np
-import os
-
-os.environ['TF_CPP_MIN_LOG_LEVEL']='3'
-
-#All of the Keras imports to help us with MNIST and Neural Network
+import keras as kr
 from keras.datasets import mnist
-from keras.models import Sequential, load_model
-from keras.layers.core import Dense, Dropout, Activation
-from keras.utils import np_utils
 
-#Load The data in 
-(X_train, y_train), (X_test, y_test) = mnist.load_data()
+#Load the data in 
+(xTrain, yTrain), (xTest, yTest) = mnist.load_data()
 
-#Print the datas shape before doing any changes to it 
-print("X_train shape", X_train.shape)
-print("y_train shape", y_train.shape)
-print("X_test shape", X_test.shape)
-print("y_test shape", y_test.shape)
+xTrain = xTrain.reshape(xTrain.shape[0], xTrain.shape[1], xTrain.shape[2]).astype('float32')
+xTest = xTest.reshape(xTest.shape[0], xTest.shape[1], xTest.shape[2]).astype('float32')
 
-#Building the input vector from the 28x28 pixels
-X_train = X_train.reshape(60000, 784)
-X_test = X_test.reshape(10000, 784)
-X_train = X_train.astype('float32')
-X_test = X_test.astype('float32')
-
-#Normalizing the data in order to help testing it 
-X_train /= 255
-X_test /= 255
+#Scale image to 255 pixels and check if there are pixels in the area or not 
+xTrain = xTrain/255
+xTest = xTest/255
 
 #Print the final shape before testing it
-print("Train matrix shape", X_train.shape)
-print("Test matrix shape", X_test.shape)
+print("Train matrix shape", xTrain.shape)
+print("Test matrix shape", xTrain.shape)
 
-print(np.unique(y_train, return_counts=True))
+yTrain = kr.utils.np_utils.to_categorical(yTrain)
+yTest = kr.utils.np_utils.to_categorical(yTest)
 
-n_classes = 10
-print("Shape before one-hot encoding: ", y_train.shape)
-Y_train = np_utils.to_categorical(y_train, n_classes)
-Y_test = np_utils.to_categorical(y_test, n_classes)
-print("Shape after one-hot encoding: ", Y_train.shape)
+#Building a linear stack of layers with the sequential model
+model = kr.models.Sequential()
+model.add(kr.layers.Dense(512, input_shape=(xTrain.shape[1], xTrain.shape[2])))
+model.add(kr.layers.Flatten())
+model.add(kr.layers.Activation('relu'))
+model.add(kr.layers.Dropout(0.2))
+model.add(kr.layers.Dense(10))
+model.add(kr.layers.Activation('softmax'))
 
-# building a linear stack of layers with the sequential model
-model = Sequential()
-model.add(Dense(512, input_shape=(784,)))
-model.add(Activation('relu'))                            
-model.add(Dropout(0.2))
+#Train the model
+model.compile(optimizer="adam", loss="categorical_crossentropy", metrics=["accuracy"])
 
-model.add(Dense(512))
-model.add(Activation('relu'))
-model.add(Dropout(0.2))
+#Fit the model
+model.fit(xTrain, yTrain, batch_size = 128, epochs = 20, verbose = 1)
 
-model.add(Dense(10))
-model.add(Activation('softmax'))
-
-#Compiling the model after sequentilizing it
-model.compile(loss='categorical_crossentropy', metrics=['accuracy'], optimizer='adam')
+#Loss and accuracy measurement 
+loss, accuracy = model.evaluate(xTrain, yTrain, verbose=1)
+print("\n\nLoss: %6.4f\tAccuracy: %6.4f" % (loss, accuracy))
+prediction = np.around(model.predict(np.expand_dims(xTest[0], axis=0))).astype(np.int)[0]
 
 #Training and saving of the model 
 history = model.fit(X_train, Y_train,
@@ -65,4 +47,3 @@ history = model.fit(X_train, Y_train,
 
 model.save('mnist_model.h5')
 print('Saved trained model')
-
