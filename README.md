@@ -4,6 +4,8 @@ This is my repository for my Emerging Technologies Project which reads a users i
 
 Using Javascript, html and python I created a web app that allows a user to draw a number on a canvas for tensorflow and keras to predict the number that was input.
 
+Unfortunately with a few complications I wasnt able to get the predictions.
+
 ## Requirements
 * Python
 * Keras
