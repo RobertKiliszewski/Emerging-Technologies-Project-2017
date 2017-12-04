@@ -6,14 +6,14 @@
 </head>
 
 <body>
-                        <canvas id="imageView" width="400" height="300"></canvas>
-                        <br>
-                        <button id="clear">Erase</button>
-                        <button onclick="saveDrawing()">Submit</button>
+    <canvas id="imageView" width="400" height="300"></canvas>
+    <br>
+    <button id="clear">Erase</button>
+    <button onclick="saveDrawing()">Submit</button>
 
-                        <br>
-                        <p class="lead">Prediction: <p p class="lead" id='prediction'></p></p>
-    <script src="static/js/controller.js"></script>
+    <br>
+    <p class="lead">Prediction: <p p class="lead" id='prediction'></p></p>
+    <script src="templates/js/controller.js"></script>
     <script src="{{url_for('static',filename='jquery-3.2.0.min.js')}}"></script>
     
 </body>

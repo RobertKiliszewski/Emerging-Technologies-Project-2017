@@ -33,7 +33,7 @@ if (window.addEventListener) {
             this.mousemove = function (ev) {
                 if (tool.started) {
                     context.lineTo(ev._x, ev._y);
-                    context.lineWidth = 15;
+                    context.lineWidth = 10;
                     context.stroke();
 
                 }
