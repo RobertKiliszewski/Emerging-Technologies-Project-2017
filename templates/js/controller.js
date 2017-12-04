@@ -13,9 +13,7 @@ if (window.addEventListener) {
             context = canvas.getContext('2d');
             context.fillStyle="#FFFFFF";
             context.fillRect(0, 0, 400, 300)
-
             tool = new tool_pencil();
-
             canvas.addEventListener('mousedown', ev_canvas, false);
             canvas.addEventListener('mousemove', ev_canvas, false);
             canvas.addEventListener('mouseup', ev_canvas, false);
@@ -30,6 +28,7 @@ if (window.addEventListener) {
                 context.moveTo(ev._x, ev._y);
                 tool.started = true;
             };
+
             this.mousemove = function (ev) {
                 if (tool.started) {
                     context.lineTo(ev._x, ev._y);
@@ -47,7 +46,6 @@ if (window.addEventListener) {
             };
         }
 
-    
         function ev_canvas(ev) {
             if (ev.layerX || ev.layerX == 0) { // Firefox
                 ev._x = ev.layerX;
@@ -57,15 +55,12 @@ if (window.addEventListener) {
                 ev._y = ev.offsetY;
             }
 
-            // Call the event handler of the tool.
             var func = tool[ev.type];
             if (func) {
                 func(ev);
             }
         }
-
         init();
-
     }, false);
 }
 
@@ -73,13 +68,12 @@ document.getElementById('clear').addEventListener('click', function () {
     context.fillStyle="#FFFFFF";
     context.fillRect(0, 0, 400, 300)
 
-    
 }, false);
 
 function saveDrawing() {
 
     var img = canvas.toDataURL("images/png");
-
+    //Ajax call
     $.ajax({
         url: '/upload',
         method: 'POST',
