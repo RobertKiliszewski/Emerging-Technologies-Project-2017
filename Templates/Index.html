@@ -6,84 +6,16 @@
 </head>
 
 <body>
+                        <canvas id="imageView" width="400" height="300"></canvas>
+                        <br>
+                        <button id="clear">Erase</button>
+                        <button onclick="saveDrawing()">Submit</button>
 
-            function save() {
-                 document.getElementById("canvasimg").style.border = "2px solid";
-                 var dataURL = canvas.toDataURL();
-                 document.getElementById("canvasimg").src = dataURL;
-                 document.getElementById("canvasimg").style.display = "inline";
-             }
-            
-            function draw() {
-                ctx.beginPath();
-                ctx.moveTo(prevX, prevY);
-                ctx.lineTo(currX, currY);
-                ctx.strokeStyle = x;
-                ctx.lineWidth = y;
-                ctx.stroke();
-                ctx.closePath();
-            }
-            
-            function findxy(res, e) {
-                if (res == 'down') {
-                    prevX = currX;
-                    prevY = currY;
-                    currX = e.clientX - canvas.offsetLeft;
-                    currY = e.clientY - canvas.offsetTop;
-            
-                    flag = true;
-                    dot_flag = true;
-                    if (dot_flag) {
-                        ctx.beginPath();
-                        ctx.fillStyle = x;
-                        ctx.fillRect(currX, currY, 2, 2);
-                        ctx.closePath();
-                        dot_flag = false;
-                    }
-                }
-                if (res == 'up' || res == "out") {
-                    flag = false;
-                }
-                if (res == 'move') {
-                    if (flag) {
-                        prevX = currX;
-                        prevY = currY;
-                        currX = e.clientX - canvas.offsetLeft;
-                        currY = e.clientY - canvas.offsetTop;
-                        draw();
-                    }
-                }
-            }
-
-            function uploadImage()
-            {
-                var $SCRIPT_ROOT = {{request.script_root|tojson|safe}};
-	   			var canvasObj = document.getElementById("canv");
-	   			var img = canvasObj.toDataURL();
-                document.getElementById("canv").src = img;
-	   			$.ajax({
-	   				type: "POST",
-	   				url: $SCRIPT_ROOT + "/download/",
-	   				data: img,
-	   				success: function(data){
-	   					
-	   				}
-	   			});
-            }
-        </script>
-    </head>
-
-    <body onload="initialize()"> 
-        <h1 style="position:absolute;left:45%">Draw A Number</h1>    
-        <canvas id="canv" width="400" height="400" style="position:absolute;top:10%;left:40%;border:2px solid;"></canvas>
-        <img id="canvasimg" style="position:absolute;top:10%;left:52%;" style="display:none;">
-        <Button type="button" id="downloader" onclick="uploadImage()">Download</Button>
-        <Button type="button" id="downloader" onclick="save()">save</Button>
-    </body>
-</html>
-<!--<form action="/uploader" method="post" enctype="multipart/form-data" >
-Upload file <input type="file" name="image">-->
-<!--<input type="submit" value="Upload">-->    <script src="templates/js/controller.js"></script>
+                        <br>
+                        <p class="lead">Prediction: <p p class="lead" id='prediction'></p></p>
+    <script src="static/js/controller.js"></script>
+    <script src="{{url_for('static',filename='jquery-3.2.0.min.js')}}"></script>
+    
 </body>
 
 </html>

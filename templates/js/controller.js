@@ -1,5 +1,7 @@
 //https://stackoverflow.com/questions/2368784/draw-on-html5-canvas-using-a-mouse
 
+<script src="{{url_for('static',filename='jquery-3.2.0.min.js')}}"></script>
+
 if (window.addEventListener) {
 
     var canvas, context, tool;
@@ -47,8 +49,10 @@ if (window.addEventListener) {
 
     
         function ev_canvas(ev) {
+            if (ev.layerX || ev.layerX == 0) { // Firefox
                 ev._x = ev.layerX;
                 ev._y = ev.layerY;
+            } else if (ev.offsetX || ev.offsetX == 0) { // Opera
                 ev._x = ev.offsetX;
                 ev._y = ev.offsetY;
             }

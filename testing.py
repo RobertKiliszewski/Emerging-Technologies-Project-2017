@@ -32,18 +32,12 @@ model.add(kr.layers.Activation('softmax'))
 model.compile(optimizer="adam", loss="categorical_crossentropy", metrics=["accuracy"])
 
 #Fit the model
-model.fit(xTrain, yTrain, batch_size = 128, epochs = 20, verbose = 1)
+model.fit(xTrain, yTrain, batch_size = 128, epochs = 1, verbose = 1)
 
 #Loss and accuracy measurement 
 loss, accuracy = model.evaluate(xTrain, yTrain, verbose=1)
 print("\n\nLoss: %6.4f\tAccuracy: %6.4f" % (loss, accuracy))
 prediction = np.around(model.predict(np.expand_dims(xTest[0], axis=0))).astype(np.int)[0]
 
-#Training and saving of the model 
-history = model.fit(X_train, Y_train,
-          batch_size=128, epochs=1,
-          verbose=2,
-          validation_data=(X_test, Y_test))
-
-model.save('mnist_model.h5')
+model.save('model.h5')
 print('Saved trained model')

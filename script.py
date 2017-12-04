@@ -15,12 +15,16 @@ def index():
 def uploadImage():
     #Data from the image is stored in the data variable 
     data = request.get_data()
+    print(data)
 
     #remove what we dont need in 'data' and store it in img
     img = re.search(b'base64,(.*)', data).group(1)
     with open('./images/uploaded-img.png','wb') as fh:
         fh.write(base64.b64decode(img))
     
+
+    # the images is read in from the file as an array
+    # the image is converted to greyscale, mode 'L' converts it to 8-bit pixels, black and white - (2)
     img_bytes = imread('./images/uploaded-img.png', mode ='L')
     img_bytes = np.invert(img_bytes)
     img_bytes = imresize(img_bytes, (28,28))
